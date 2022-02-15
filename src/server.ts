@@ -8,6 +8,7 @@ import { productsRouter } from "./routers/products-router";
 import { categoriesRouter } from "./routers/categories-router";
 import { cartsRouter } from "./routers/carts-router";
 import { cartItemsRouter } from "./routers/cart-items-router";
+import { ordersRouter } from "./routers/orders-router";
 
 config();
 const { PORT } = process.env;
@@ -27,6 +28,7 @@ app.use("/products", productsRouter);
 app.use("/categories", categoriesRouter);
 app.use("/shopping-carts", cartsRouter);
 app.use("/cart-items", cartItemsRouter);
+app.use("/orders", ordersRouter);
 
 startServer();
 

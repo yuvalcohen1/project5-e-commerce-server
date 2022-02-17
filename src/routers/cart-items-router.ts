@@ -1,29 +1,9 @@
-import { config } from "dotenv";
 import express, { Request, Response } from "express";
-import expressJwt from "express-jwt";
 import { Cart_Item } from "../collections/cartItems";
+import { verifyJwtMiddleware } from "../helpers/verify-jwt-middleware";
 import { CartItemModel } from "../models/cart-item.model";
 
-config();
-const { JWT_SECRET } = process.env;
-
 export const cartItemsRouter = express.Router();
-
-const verifyJwtMiddleware = expressJwt({
-  secret: JWT_SECRET!,
-  algorithms: ["HS256"],
-  getToken: function fromHeaderOrQuerystring(req) {
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.split(" ")[0] === "Bearer"
-    ) {
-      return req.headers.authorization.split(" ")[1];
-    } else if (req.cookies && req.cookies.token) {
-      return req.cookies.token;
-    }
-    return null;
-  },
-});
 
 cartItemsRouter.get(
   "/:cartId",

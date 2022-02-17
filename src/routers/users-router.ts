@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt";
 import { config } from "dotenv";
 import express, { Request, Response } from "express";
-import expressJwt from "express-jwt";
 import jsonwebtoken from "jsonwebtoken";
 import { promisify } from "util";
 import { User } from "../collections/users";
+import { verifyJwtMiddleware } from "../helpers/verify-jwt-middleware";
 import { RegisterBody } from "../models/register-body.model";
 import { UserModel } from "../models/user.model";
 
@@ -12,22 +12,6 @@ config();
 const { JWT_SECRET } = process.env;
 
 const promisifiedSign = promisify(jsonwebtoken.sign);
-
-const verifyJwtMiddleware = expressJwt({
-  secret: JWT_SECRET!,
-  algorithms: ["HS256"],
-  getToken: function fromHeaderOrQuerystring(req) {
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.split(" ")[0] === "Bearer"
-    ) {
-      return req.headers.authorization.split(" ")[1];
-    } else if (req.cookies && req.cookies.token) {
-      return req.cookies.token;
-    }
-    return null;
-  },
-});
 
 export const usersRouter = express.Router();
 

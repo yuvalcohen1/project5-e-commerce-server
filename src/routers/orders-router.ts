@@ -1,31 +1,11 @@
-import { config } from "dotenv";
 import express, { Request, Response } from "express";
-import expressJwt from "express-jwt";
 import { Cart_Item } from "../collections/cartItems";
 import { Cart } from "../collections/carts";
 import { Order } from "../collections/orders";
+import { verifyJwtMiddleware } from "../helpers/verify-jwt-middleware";
 import { OrderModel } from "../models/order.model";
 
-config();
-const { JWT_SECRET } = process.env;
-
 export const ordersRouter = express.Router();
-
-const verifyJwtMiddleware = expressJwt({
-  secret: JWT_SECRET!,
-  algorithms: ["HS256"],
-  getToken: function fromHeaderOrQuerystring(req) {
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.split(" ")[0] === "Bearer"
-    ) {
-      return req.headers.authorization.split(" ")[1];
-    } else if (req.cookies && req.cookies.token) {
-      return req.cookies.token;
-    }
-    return null;
-  },
-});
 
 ordersRouter.get(
   "/num-of-all-orders",

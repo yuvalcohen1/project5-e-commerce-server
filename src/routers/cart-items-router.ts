@@ -33,10 +33,11 @@ cartItemsRouter.post(
     }
 
     try {
-      const newCartItem = await (
+      await (
         await Cart_Item.create({ quantity, product, cartId })
       ).populate("product");
-      res.send(newCartItem);
+      const updatedCartItems = await Cart_Item.find({ cartId });
+      res.send(updatedCartItems);
     } catch (error: any) {
       res.status(500).send(error.message);
     }

@@ -27,20 +27,18 @@ cartItemsRouter.get(
 cartItemsRouter.post(
   "/add-cart-item",
   verifyJwtMiddleware,
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response<CartItemModel>) => {
     const { cartId, product, quantity }: Partial<CartItemModel> = req.body;
     if (!cartId || !product || !quantity) {
       return res.sendStatus(400);
     }
 
     try {
-      await (
+      const newCartItem = await (
         await Cart_Item.create({ quantity, product, cartId })
       ).populate("product");
-      const updatedCartItems = await Cart_Item.find({ cartId }).populate(
-        "product"
-      );
-      res.send(updatedCartItems);
+
+      res.send(newCartItem);
     } catch (error: any) {
       res.status(500).send(error.message);
     }
@@ -48,14 +46,11 @@ cartItemsRouter.post(
 );
 
 cartItemsRouter.delete(
-  "/delete-cart-item/:cartId/:cartItemId",
+  "/delete-cart-item/:cartItemId",
   verifyJwtMiddleware,
-  async (
-    req: Request<{ cartId: string; cartItemId: string }>,
-    res: Response<CartItemModel[] | string>
-  ) => {
-    const { cartItemId, cartId } = req.params;
-    if (!cartItemId || !cartId) {
+  async (req: Request<{ cartItemId: string }>, res: Response) => {
+    const { cartItemId } = req.params;
+    if (!cartItemId) {
       return res.sendStatus(400);
     }
 
@@ -65,11 +60,8 @@ cartItemsRouter.delete(
         res.status(400).send("cart item has not been deleted");
         return;
       }
-      const updatedCartItems = (await Cart_Item.find({
-        cartId,
-      }).populate("product")) as CartItemModel[];
 
-      res.send(updatedCartItems);
+      res.end();
     } catch (error: any) {
       res.status(500).send(error.message);
     }

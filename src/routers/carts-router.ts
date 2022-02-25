@@ -59,7 +59,7 @@ cartsRouter.put(
       cart!.isOpen = 0;
       cart?.save();
 
-      res.send(cart);
+      res.end();
     } catch (error: any) {
       res.status(500).send(error.message);
     }
